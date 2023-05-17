@@ -13,6 +13,11 @@ public static class TollFeeCalculator
             throw new VehicleLicensePlateException();
         }
 
+        if (tollFees.Any(x => x.TollDate.Day != tollFees[0].TollDate.Day))
+        {
+            throw new ArgumentException("Tollfee dates do not match.");
+        }
+
         tollFees.OrderBy(t => t.TollDate);
 
         var totalDailyTollFeeAmount = tollFees[0].TollFeeAmount;
@@ -24,9 +29,7 @@ public static class TollFeeCalculator
             var currTollDate = tollFees[i].TollDate;
             var currTollFeeAmount = tollFees[i].TollFeeAmount;
 
-            TimeSpan timeDiff = currTollDate.TimeOfDay - prevTollDate.TimeOfDay;
-
-            if (timeDiff.TotalMinutes >= 60)
+            if (currTollDate.Hour != prevTollDate.Hour)
             {
                 totalDailyTollFeeAmount += currTollFeeAmount;
             }
@@ -88,6 +91,7 @@ public static class TollFeeCalculator
         return date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday
             || new SwedenPublicHoliday().PublicHolidays(date.Year).Contains(date);
     }
+
     public static bool IsTollFreeVehicle(Vehicle vehicle)
     {
         return Enum.IsDefined(typeof(TollFreeVehicles), vehicle.GetType().Name);
