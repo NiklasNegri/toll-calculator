@@ -7,15 +7,15 @@ namespace TollCalculator.Tests
     public class TollFeeCalculatorTests
     {
         [Fact]
-        public void CalculateTotalDailyTollFee_ValuesWithin60Min_ShouldReturnHighestFee()
+        public void CalculateTotalDailyTollFee_ValuesWithinSameHour_ShouldReturnHighestFee()
         {
             var car = new Car("ABC-123");
-            var firstTollDate = new DateTime(2023, 1, 6, 6, 45, 0);
-            var secondTollDate = new DateTime(2023, 1, 6, 7, 15, 0);
+            var firstTollDate = new DateTime(2023, 1, 6, 6, 15, 0);
+            var secondTollDate = new DateTime(2023, 1, 6, 6, 45, 0);
             var firstTollFee = TollFeeCalculator.NewTollFee(car, firstTollDate);
             var secondTollFee = TollFeeCalculator.NewTollFee(car, secondTollDate);
             var tollFees = new TollFee[2] { firstTollFee, secondTollFee };
-            var expected = 18;
+            var expected = 13;
 
             var actual = TollFeeCalculator.CalculateTotalDailyTollFee(car, tollFees);
 
@@ -23,7 +23,7 @@ namespace TollCalculator.Tests
         }
 
         [Fact]
-        public void CalculateTotalDailyTollFee_ValuesNotWithin60Min_ShouldReturnSum()
+        public void CalculateTotalDailyTollFee_ValuesNotWithinSameHour_ShouldReturnSum()
         {
             var car = new Car("ABC-123");
             var firstTollDate = new DateTime(2023, 1, 6, 6, 45, 0);
@@ -44,10 +44,11 @@ namespace TollCalculator.Tests
             var car = new Car("ABC-123");
             var firstTollDate = new DateTime(2023, 1, 6, 6, 45, 0);
             var secondTollDate = firstTollDate.AddHours(1.05);
-            var thirdTollDate = secondTollDate.AddHours(1.05);
+            var thirdTollDate = secondTollDate.AddHours(0.5);
             var fourthTollDate = thirdTollDate.AddHours(1.05);
             var fifthTollDate = fourthTollDate.AddHours(1.05);
             var sixthTollDate = fifthTollDate.AddHours(1.05);
+            var seventhTollDate = sixthTollDate.AddHours(1.05);
             var tollFees = new TollFee[]
             {
                 TollFeeCalculator.NewTollFee(car, firstTollDate),
@@ -56,6 +57,7 @@ namespace TollCalculator.Tests
                 TollFeeCalculator.NewTollFee(car, fourthTollDate),
                 TollFeeCalculator.NewTollFee(car, fifthTollDate),
                 TollFeeCalculator.NewTollFee(car, sixthTollDate),
+                TollFeeCalculator.NewTollFee(car, seventhTollDate)
             };
             var expected = 60;
 
