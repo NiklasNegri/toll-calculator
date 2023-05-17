@@ -9,14 +9,5 @@
         {
             LicensePlate = licensePlate;
         }
-
-        private enum TollFreeVehicle
-        {
-            Motorbike = 0,
-            Emergency = 1,
-            Diplomat = 2,
-            Foreign = 3,
-            Military = 4
-        }
     }
 }
